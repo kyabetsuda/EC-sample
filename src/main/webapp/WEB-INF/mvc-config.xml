@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+
+    <!-- Uncomment and your base-package here:
+         <context:component-scan
+            base-package="org.springframework.samples.web"/>  -->
+
+
+    <mvc:annotation-driven />
+    
+    <context:component-scan base-package="jp.TsudaJun.spring.mysample" />
+
+	<!-- テンプレートリソルバー -->
+	<bean id="templateResolver" class="org.thymeleaf.spring3.templateresolver.SpringResourceTemplateResolver">
+	  <property name="prefix" value="/WEB-INF/templates/" />
+	  <property name="suffix" value=".html" />
+	  <property name="templateMode" value="HTML5" />
+	  <property name="characterEncoding" value="UTF-8" />
+	</bean>
+	
+	<bean id="templateEngine" class="org.thymeleaf.spring3.SpringTemplateEngine">
+	  <property name="templateResolver" ref="templateResolver" />
+	</bean>
+	
+	<bean class="org.thymeleaf.spring3.view.ThymeleafViewResolver">
+	  <property name="templateEngine" ref="templateEngine" />
+	  <property name="characterEncoding" value="UTF-8" />	
+	</bean>
+	
+	<!-- メッセージの外部化 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages" />
+	</bean>
+	
+	<!-- メッセージの外部化(javaソースで使う) -->
+	<context:property-placeholder location="classpath:messages.properties"/>
+	
+	<!-- データソース -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+	    <property name="driverClassName" value="${database.driver}" /> 
+	    <property name="url" value="${database.url}" /> 
+	    <property name="username" value="${database.username}" />
+	    <property name="password" value="${database.password}" />
+	</bean>
+	
+	<!-- エンティティマネージャー -->
+ 	<bean id="entityManagerFactoryBean" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+     <!--  This makes /META-INF/persistence.xml is no longer necessary -->
+      <property name="packagesToScan" value="jp.TsudaJun.spring.mysample.model" />
+      <!-- JpaVendorAdapter implementation for Hibernate EntityManager.
+           Exposes Hibernate's persistence provider and EntityManager extension interface -->
+      <property name="jpaVendorAdapter">
+         <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+      </property>
+      <property name="jpaProperties">
+         <props>
+            <prop key="hibernate.hbm2ddl.auto">validate</prop>
+            <prop key="hibernate.dialect">${database.dialect}</prop>
+         </props>
+      </property>
+   </bean>
+   
+   	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryBean" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<!-- 画像のアップロードを行うためのbean -->
+	<bean id="multipartResolver"
+        class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</bean>
+	
+	<!-- 静的リソースへのアクセス -->
+	<mvc:default-servlet-handler/>
+
+</beans>

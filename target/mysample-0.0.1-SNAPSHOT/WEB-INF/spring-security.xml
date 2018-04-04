@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/security
+         http://www.springframework.org/schema/security/spring-security.xsd">	
+	
+	<sec:http  use-expressions="true" entry-point-ref="loginUrlAuthenticationEntryPoint">
+		<sec:intercept-url pattern="/" access="permitAll" />
+		<sec:intercept-url pattern="/login" access="permitAll" />
+		<sec:intercept-url pattern="/item" access="permitAll" />
+		<sec:intercept-url pattern="/itemdetail/**" access="permitAll" />
+		<sec:intercept-url pattern="/cart" access="permitAll" />
+		<sec:intercept-url pattern="/userregister" access="permitAll" />
+		<sec:intercept-url pattern="/kanryo/**" access="permitAll" />
+		<sec:intercept-url pattern="/static/itemimg/*.jpg" access="permitAll" />
+		<sec:intercept-url pattern="/**" access="isAuthenticated()" />
+	       
+		<!-- ※ログインフォーム向けにある既存の認証処理を独自認証処理に置き換える。 -->
+		<sec:custom-filter position="FORM_LOGIN_FILTER" ref="applicationUsernamePasswordAuthenticationFilter" />
+<!-- 		<sec:session-management session-fixation-protection="none" />
+        	<sec:custom-filter position="SESSION_MANAGEMENT_FILTER" ref="customSessionManagementFilter"/> -->
+        	
+		<sec:logout logout-url="/logout" logout-success-url="/login" invalidate-session="true" />
+	</sec:http>
+	   
+	<!-- ※ログイン画面の指定。認証なしでアクセスするとここに飛ばされる -->
+	<bean id="loginUrlAuthenticationEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint" >
+		<constructor-arg value="/login" />
+	</bean>
+	   
+	<bean id="applicationUsernamePasswordAuthenticationFilter"
+		class="jp.TsudaJun.spring.mysample.security.ApplicationUsernamePasswordAuthenticationFilter" >
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationSuccessHandler" ref="authenticationSuccessHandler" />
+		<property name="authenticationFailureHandler" ref="authenticationFailureHandler" />
+		<!-- ※認証を行うパス。ここに認証情報をつけてPOSTすると認証処理（filter）が実行される。 -->
+		<property name="filterProcessesUrl" value="/authentication" />
+	</bean>
+	
+	<bean id="authenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler" >
+		<property name="defaultTargetUrl" value="/"/>
+	</bean>
+	
+	<bean id="authenticationFailureHandler" class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+		<property name="defaultFailureUrl" value="/login?error=true"/>
+	</bean>
+	
+	<!-- ※認証されたユーザの情報を提供するプロバイダの指定。 -->
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider ref="applicationUsernamePasswordAuthenticationProvider" />
+	</sec:authentication-manager>
+	
+	<!-- ※認証通過時、認証ユーザの提供するプロバイダ -->
+	<bean id="applicationUsernamePasswordAuthenticationProvider" class="jp.TsudaJun.spring.mysample.security.ApplicationUsernamePasswordAuthenticationProvider">
+	</bean>
+     
+    <bean id="httpSessionSecurityContextRepository"
+                  class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+    
+</beans>

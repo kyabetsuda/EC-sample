@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>userregister</title>
+	<meta http-equiv="Content-Type"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{ #{static.accessPath} + 'vendor/bootstrap/css/bootstrap.min.css'}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link th:href="@{ #{static.accessPath} + 'vendor/font-awesome/css/font-awesome.min.css'}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link th:href="@{ #{static.accessPath} + 'vendor/magnific-popup/magnific-popup.css'}" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{ #{static.accessPath} + 'css/freelancer.min.css'}" rel="stylesheet">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+		<div class="container">
+			<a class="navbar-brand js-scroll-trigger" th:href="@{'/'}">EC</a>
+			<button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			  Menu
+			  <i class="fa fa-bars"></i>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+			  <ul class="navbar-nav ml-auto">
+			    <li class="nav-item mx-0 mx-lg-1">
+			      <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" th:href="@{'/login'}">Login</a>
+			    </li>
+			    <li class="nav-item mx-0 mx-lg-1">
+			      <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" th:href="@{'/logout'}">Logout</a>
+			    </li>
+			    <li class="nav-item mx-0 mx-lg-1">
+			      <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" th:href="@{'/cart'}">Cart</a>
+			    </li>
+			    <li class="nav-item mx-0 mx-lg-1">
+			      <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" th:href="@{'/mypage'}">MyPage</a>
+			    </li>
+			  </ul>
+			</div>
+		</div>
+    </nav>
+    
+    <section>
+		<div class="container">
+			<br>
+			<br>
+			<br>
+	        <h2 class="pull-left text-uppercase text-secondary mb-0">ユーザ登録</h2>
+	        <br>
+	        <br>
+	        <br>
+	        <div class="row">
+			<div class="col-lg-8 mx-auto">
+				<form method="post" th:if="${check}" th:action="@{'/userregister'}" th:object="${user}" novalidate="novalidate">
+					<div class="control-group">
+					  <div class="form-group floating-label-form-group controls mb-0 pb-2">
+					    <label>ユーザーID</label>
+					    <input class="form-control" name="userid" th:field="*{userid}" type="text" placeholder="UserId" />
+					  	<div th:if="${#fields.hasErrors('userid')}" th:each="e : ${#fields.detailedErrors('userid')}">
+							<div th:text="${e.message}" style="color : red"></div>
+						</div>
+					  </div>
+					</div>
+					<div class="control-group">
+					  <div class="form-group floating-label-form-group controls mb-0 pb-2">
+					    <label>ユーザー名</label>
+					    <input class="form-control" name="username" th:field="*{username}" type="text" placeholder="Username" />
+					  	<div th:if="${#fields.hasErrors('username')}" th:each="e : ${#fields.detailedErrors('username')}">
+							<div th:text="${e.message}" style="color : red"></div>
+						</div>
+					  </div>
+					</div>
+					<div class="control-group">
+					  <div class="form-group floating-label-form-group controls mb-0 pb-2">
+					    <label>パスワード</label>
+					    <input class="form-control" name="password" th:field="*{password}" type="text" placeholder="password" />
+					  	<div th:if="${#fields.hasErrors('password')}" th:each="e : ${#fields.detailedErrors('password')}">
+							<div th:text="${e.message}" style="color : red"></div>
+						</div>
+					  </div>
+					</div>
+					<br>
+					<div class="form-group">
+					  <button type="submit" class="btn btn-primary btn-xl">登録</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	    </div>
+    </section>
+
+<!-- <form method="post" th:if="${check}" action="/EC/userregister" th:object="${user}">
+	<table>
+		<tr>
+			<td><label for="user_id">ユーザーID</label></td>
+			<td>
+				<input type="text" name="userid" th:field="*{userid}"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<div th:if="${#fields.hasErrors('userid')}" th:each="e : ${#fields.detailedErrors('userid')}">
+					<div th:text="${e.message}" style="color : red"></div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="user_name">ユーザー名</label></td>
+			<td>
+				<input type="text" name="username" th:field="*{username}"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<div th:if="${#fields.hasErrors('username')}" th:each="e : ${#fields.detailedErrors('username')}">
+					<div th:text="${e.message}" style="color : red"></div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="password">パスワード</label></td>
+			<td>
+				<input type="password" name="password" th:field="*{password}"/>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<div th:if="${#fields.hasErrors('password')}" th:each="e : ${#fields.detailedErrors('password')}">
+					<div th:text="${e.message}" style="color : red"></div>
+				</div>
+			</td>
+		</tr>
+		
+		<tr><td></td><td><input type="submit" value="登録" /></td></tr>
+	</table>
+
+</form> -->
+
+	<footer class="footer text-center">
+		<div class="row">
+			<div class="col-md-4 mb-5 mb-lg-0">
+			  
+			</div>
+			<div class="col-md-4 mb-5 mb-lg-0">
+				<h4 class="text-uppercase mb-4">EC</h4>
+				<p class="lead mb-0">Copyright &copy; Your Website 2018</p>
+			</div>
+			<div class="col-md-4">
+			  
+			</div>
+		</div>
+    </footer>
+    <!-- Bootstrap core JavaScript -->
+   	<script th:src="@{ #{static.accessPath} + 'vendor/jquery/jquery.min.js'}"></script>
+    <script th:src="@{ #{static.accessPath} + 'vendor/bootstrap/js/bootstrap.bundle.min.js'}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script th:src="@{ #{static.accessPath} + 'vendor/jquery-easing/jquery.easing.min.js'}"></script>
+    <script th:src="@{ #{static.accessPath} + 'vendor/magnific-popup/jquery.magnific-popup.min.js'}"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script th:src="@{ #{static.accessPath} + 'js/jqBootstrapValidation.js'}"></script>
+    <script th:src="@{ #{static.accessPath} + 'js/contact_me.js'}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script th:src="@{ #{static.accessPath} + 'js/freelancer.min.js'}"></script>
+
+</body>
+</html>
